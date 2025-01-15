@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛特乂丕 - 轻松掌控，畅游网络</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-size='24' fill='%232575fc' font-family='Arial, sans-serif'>乂</text></svg>" type="image/svg+xml">
+    <!-- 引入 layui.css -->
+    <link href="https://cdn.jsdelivr.net/npm/layui@2.9.9/dist/css/layui.min.css" rel="stylesheet">
+    <style>
+        /* 全局样式 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f9fafb;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 导航栏样式 */
+        .layui-header {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0 20px;
+        }
+        .layui-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .layui-logo {
+            color: #2575fc !important;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .layui-nav {
+            background: transparent;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+        }
+        .layui-nav .layui-nav-item {
+            margin: 0 10px;
+        }
+        .layui-nav .layui-nav-item a {
+            color: #333;
+            font-size: 16px;
+        }
+        .layui-nav .layui-nav-item a:hover {
+            color: #2575fc;
+        }
+
+        /* 默认隐藏汉堡菜单 */
+        .menu-toggle {
+            display: none;
+        }
+
+        /* 移动端导航栏样式 */
+        @media (max-width: 768px) {
+            .layui-nav {
+                display: none; /* 默认隐藏导航项 */
+                flex-direction: column;
+                background: #fff;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                width: 100%;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .layui-nav .layui-nav-item {
+                margin: 0;
+                text-align: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .layui-nav .layui-nav-item a {
+                font-size: 16px;
+            }
+            .menu-toggle {
+                display: block; /* 显示汉堡菜单 */
+                font-size: 24px;
+                cursor: pointer;
+            }
+            .menu-toggle:hover {
+                color: #2575fc;
+            }
+        }
+
+        /* Banner 样式 */
+        .banner {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .banner h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .banner p {
+            font-size: 18px;
+            max-width: 800px;
+            line-height: 1.6;
+            margin-bottom: 30px; /* 增加间距 */
+        }
+
+        /* 登录按钮样式 */
+        .login-btn {
+            background: #fff;
+            color: #2575fc;
+            font-size: 18px;
+            padding: 12px 40px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .login-btn:hover {
+            background: #2575fc;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+
+        /* 其他样式保持不变 */
+        .feature-section {
+            padding: 100px 20px;
+            background: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .feature-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 40px 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        .feature-card svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            fill: #2575fc;
+        }
+        .feature-card h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #2575fc;
+        }
+        .feature-card p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .download-section {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            padding: 100px 20px;
+            text-align: center;
+            color: #fff;
+        }
+        .download-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .download-section p {
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+        .download-section .layui-btn {
+            background: #fff;
+            color: #2575fc;
+            font-size: 18px;
+            padding: 12px 40px;
+            border-radius: 25px;
+            transition: background 0.3s ease, color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+        }
+        .download-section .layui-btn:hover {
+            background: #2575fc;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        .footer {
+            background: #333;
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<div class="layui-header">
+    <div class="layui-container">
+        <div class="layui-logo">赛特乂丕</div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item"><a href="/">首页</a></li>
+            <li class="layui-nav-item"><a href="#">登录</a></li>
+        </ul>
+        <div class="menu-toggle" onclick="toggleMenu()">&#9776;</div> <!-- 汉堡菜单 -->
+    </div>
+</div>
+<!-- Banner -->
+<div class="banner">
+    <div>
+        <h1>轻松掌控，畅游网络</h1>
+        <p>赛特乂丕提供高效稳定的 DDNS 服务，让您无论身处何地，都能轻松访问您的设备。</p>
+        <!-- 登录按钮 -->
+        <button id="loginButton" class="login-btn">登录</button>
+    </div>
+</div>
+
+<!-- 产品特性 -->
+<div class="feature-section">
+    <div class="feature-grid">
+        <div class="feature-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="80" height="80">
+                <!-- 背景圆形 -->
+                <circle cx="32" cy="32" r="30" fill="#2575fc" opacity="0.1" />
+                <!-- 主体设备 -->
+                <rect x="16" y="12" width="32" height="40" rx="5" ry="5" fill="none" stroke="#2575fc" stroke-width="2" />
+                <!-- 屏幕 -->
+                <rect x="20" y="16" width="24" height="24" rx="2" ry="2" fill="#fff" />
+                <!-- 屏幕内容：简洁的线条 -->
+                <line x1="22" y1="20" x2="26" y2="20" stroke="#2575fc" stroke-width="2" />
+                <line x1="22" y1="24" x2="30" y2="24" stroke="#2575fc" stroke-width="2" />
+                <line x1="22" y1="28" x2="34" y2="28" stroke="#2575fc" stroke-width="2" />
+                <line x1="22" y1="32" x2="38" y2="32" stroke="#2575fc" stroke-width="2" />
+                <!-- 按钮 -->
+                <circle cx="32" cy="52" r="2" fill="#2575fc" />
+            </svg>
+            <h2>轻量级客户端</h2>
+            <p>极简设计，占用资源少，运行流畅无负担。一键配置，简单易用，无需专业知识也能轻松上手。</p>
+        </div>
+        <div class="feature-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="80" height="80">
+                <!-- 背景圆形 -->
+                <circle cx="32" cy="32" r="30" fill="#2575fc" opacity="0.1" />
+                <!-- 多平台设备 -->
+                <rect x="12" y="16" width="16" height="24" rx="3" ry="3" fill="none" stroke="#2575fc" stroke-width="2" />
+                <rect x="24" y="12" width="16" height="28" rx="3" ry="3" fill="none" stroke="#2575fc" stroke-width="2" />
+                <rect x="36" y="16" width="16" height="24" rx="3" ry="3" fill="none" stroke="#2575fc" stroke-width="2" />
+                <!-- 连接线 -->
+                <line x1="20" y1="32" x2="24" y2="32" stroke="#2575fc" stroke-width="2" />
+                <line x1="40" y1="32" x2="36" y2="32" stroke="#2575fc" stroke-width="2" />
+            </svg>
+            <h2>多平台支持</h2>
+            <p>支持 Windows、macOS、Linux 等主流操作系统，支持amd64、arm主流架构，随时随地管理您的设备。</p>
+        </div>
+        <div class="feature-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="80" height="80">
+                <!-- 背景圆形 -->
+                <circle cx="32" cy="32" r="30" fill="#2575fc" opacity="0.1" />
+                <!-- 中心节点 -->
+                <circle cx="32" cy="32" r="8" fill="#2575fc" />
+                <!-- 连接线 -->
+                <line x1="32" y1="40" x2="32" y2="56" stroke="#2575fc" stroke-width="2" />
+                <line x1="40" y1="32" x2="56" y2="32" stroke="#2575fc" stroke-width="2" />
+                <line x1="24" y1="32" x2="8" y2="32" stroke="#2575fc" stroke-width="2" />
+                <line x1="32" y1="24" x2="32" y2="8" stroke="#2575fc" stroke-width="2" />
+                <!-- 外部节点 -->
+                <circle cx="32" cy="56" r="4" fill="#2575fc" />
+                <circle cx="56" cy="32" r="4" fill="#2575fc" />
+                <circle cx="8" cy="32" r="4" fill="#2575fc" />
+                <circle cx="32" cy="8" r="4" fill="#2575fc" />
+            </svg>
+            <h2>主动负载均衡</h2>
+            <p>智能解析，自动选择最优线路，确保访问速度。多节点部署，有效避免单点故障，保障服务稳定。</p>
+        </div>
+        <div class="feature-card">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="80" height="80">
+                <!-- 背景圆形 -->
+                <circle cx="32" cy="32" r="30" fill="#2575fc" opacity="0.1" />
+                <!-- IPv4 和 IPv6 标志 -->
+                <text x="32" y="32" font-size="24" fill="#2575fc" text-anchor="middle" dominant-baseline="middle">
+                    <tspan x="32" y="28">IPv4</tspan>
+                    <tspan x="32" y="48">IPv6</tspan>
+                </text>
+                <!-- 连接线 -->
+                <line x1="16" y1="32" x2="48" y2="32" stroke="#2575fc" stroke-width="2" />
+            </svg>
+            <h2>支持 IPv4/IPv6</h2>
+            <p>完美兼容 IPv4 和 IPv6 协议，适应未来网络发展趋势。双栈支持，确保您的设备在任何网络环境下都能顺畅访问。</p>
+        </div>
+    </div>
+</div>
+
+<!-- 下载区域 -->
+<div class="download-section">
+    <h2>立即体验，开启您的 DDNS 之旅！</h2>
+    <p>选择赛特乂丕，您将获得简单易用、稳定可靠、安全放心的 DDNS 服务。</p>
+    <button class="layui-btn">立即下载</button>
+</div>
+
+<!-- 页脚 -->
+<div class="footer">
+    <p>&copy; 2023 赛特乂丕. 版权所有.</p>
+</div>
+
+<!-- 引入 layui.js -->
+<script src="https://cdn.jsdelivr.net/npm/layui@2.9.9/dist/layui.min.js"></script>
+<script>
+    // 切换导航栏显示状态
+    function toggleMenu() {
+        const nav = document.querySelector('.layui-nav');
+        console.log(nav.style.display === 'block');
+        if (nav.style.display === 'block') {
+            
+            nav.style.display = 'none';
+        } else {
+            nav.style.display = 'block';
+        }
+    };
+    document.getElementById('loginButton').addEventListener('click', function() {
+        const loginWindow = window.open('https://auth.dcocd.com', 'loginWindow', 'width=500,height=600');
+
+        window.addEventListener('message', function(event) {
+            if (event.origin !== 'https://b.com') return;
+
+            const token = event.data.token;
+            localStorage.setItem('token', token);
+
+            if (loginWindow) {
+                loginWindow.close();
+            }
+
+            console.log('Token received and saved:', token);
+        });
+    });
+    // 初始化 layui 导航栏
+    layui.use(['element'], function(){
+        var element = layui.element;
+    });
+</script>
+</body>
+</html>
