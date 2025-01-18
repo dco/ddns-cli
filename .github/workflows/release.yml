@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  APP_NAME: "ddns-cli"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod 
+
+      - name: Extract tag name
+        id: tag
+        run: |
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          echo "::set-output name=tag_name::$TAG_NAME"
+
+      - name: Build
+        env:
+          CGO_ENABLED: 0 
+          APP_VERSION: ${{ github.ref }}
+        run: |
+          chmod +x build.sh
+          ./build.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries
+          path: dist/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: binaries
+          path: dist/
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Assets
+        run: |
+            for file in dist/*.{tar.gz,zip}; do
+              echo "Uploading $file"
+              curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                   -H "Content-Type: application/octet-stream" \
+                   --data-binary @"$file" \
+                   "${{ github.event.release.upload_url }}?name=$(basename $file)"
+            done

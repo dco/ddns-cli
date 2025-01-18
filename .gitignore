@@ -1,3 +1,5 @@
 ddns*
 .env*
 *.log*
+dist/
+
