@@ -30,7 +30,6 @@ jobs:
       - name: Build
         env:
           CGO_ENABLED: 0 
-          APP_VERSION: ${{ github.ref }}
         run: |
           chmod +x build.sh
           ./build.sh
@@ -63,11 +62,10 @@ jobs:
           prerelease: false
 
       - name: Upload Release Assets
-        run: |
-            for file in dist/*.{tar.gz,zip}; do
-              echo "Uploading $file"
-              curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                   -H "Content-Type: application/octet-stream" \
-                   --data-binary @"$file" \
-                   "${{ github.event.release.upload_url }}?name=$(basename $file)"
-            done
+        uses: softprops/action-gh-release@v1
+        with:
+            files: |
+              dist/*.tar.gz
+              dist/*.zip
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
