@@ -46,7 +46,7 @@ var (
 func init() {
 	// Define command-line flags
 	flag.StringVar(&cid, "cid", "", "Required parameter: Client ID")
-	flag.StringVar(&loglevel, "loglevel", "error", "Set log level (default: error) Supported log levels: debug, info, warn, error")
+	flag.StringVar(&loglevel, "loglevel", "error", "Set log level Supported log levels: debug, info, warn, error")
 	flag.BoolVar(&version, "version", false, "Print version number")
 	fmt.Printf(Banner, Version)
 	fmt.Println("Author: dco")
@@ -320,7 +320,7 @@ func getIPInfo() (*IPInfo, error) {
 			ip := ipNet.IP
 
 			// Filter out loopback and private addresses
-			if ip.To4() != nil && !ip.IsLoopback() && !ip.IsPrivate() {
+			if ip.To4() != nil && !ip.IsLoopback() && !ip.IsPrivate() && isOtherLocalIPv4(ip) {
 				nicInfo.IPv4 = append(nicInfo.IPv4, ip.String())
 			} else if ip.To16() != nil && !ip.IsLoopback() && !ip.IsPrivate() && isGlobalUnicastIPv6(ip) {
 				nicInfo.IPv6 = append(nicInfo.IPv6, ip.String())
@@ -441,4 +441,21 @@ func GetIPsFromMap(ipType string) ([]string, error) {
 	}
 
 	return ips, nil
+}
+
+func isOtherLocalIPv4(ip net.IP) bool {
+	if ip.To4() == nil {
+		return false
+	}
+
+	ipv4 := ip.To4()
+	if ipv4[0] >= 224 && ipv4[0] <= 239 {
+		return false
+	}
+
+	if ipv4[0] == 169 && ipv4[1] == 254 {
+		return false
+	}
+
+	return true
 }
